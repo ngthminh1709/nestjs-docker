@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Nest Redis</title>
+</head>
+<body>
+    <form class="form">
+        <input class="key" type="text" name="key" placeholder="key"/>
+        <input class="value" type="text" name="value" placeholder="value"/>
+        <button type="submit">SET</button>
+    </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    const form = document.querySelector('.form');
+    const key = document.querySelector('.key');
+    const value = document.querySelector('.value');
+
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        axios({
+            url:'http://localhost:3000',
+            method: 'POST',
+            data: {
+                key: key.value,
+                value: value.value
+            }
+        }).then(res => {
+            console.log(res.data)
+        }).catch(err => {
+            console.log(err)
+        })
+    }
+
+    form.addEventListener('submit', handleSubmit)
+</script>
+</body>
+</html>
