@@ -4,6 +4,7 @@ import { BodyDto } from './dtos/bodyDto';
 import {RedisCache} from "./interfaces/redis.interface";
 import {RedisClientType} from "redis";
 
+
 @Injectable()
 export class AppService {
   private redisClient: RedisClientType;

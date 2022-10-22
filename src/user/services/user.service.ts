@@ -7,20 +7,46 @@ import {UserRepository} from "../repositorries/user.repository";
 
 @Injectable()
 export class UserService {
-    private readonly logger = new Logger(UserService.name);
-
     constructor(
+        @InjectModel(UserEntity)
+        private readonly userModel: BaseModel<UserEntity>,
         @InjectRepository(UserEntity)
         private readonly userRepository: UserRepository
     ) {
     }
 
-    async register(registerUserDto: RegisterUserDto) {
-        const {email, username, password} = registerUserDto;
+    async index() {
+        return this.userRepository.findOne({email: 'email@email.com'}, {raw: true, allow_filtering: true}).pipe();
 
-        const newUser = this.userRepository.create(registerUserDto)
-        return this.userRepository.save(newUser).pipe()
-
+        // try{
+        //     const user = await this.userRepository.findOne({email: 'email@email.com'},{raw:true}).pipe()
+        //     await console.log(user)
+        //     return { user: user }
+        // } catch (e) {
+        //     console.log(e)
+        // }
     }
 
+    async register(registerUserDto: RegisterUserDto) {
+        const {email, username, password} = registerUserDto;
+        const newUser = this.userRepository.create(registerUserDto)
+        return this.userRepository.save(newUser).pipe()
+    }
+
+    async upload(body, files) {
+        // await console.log(file)
+        for (const file of files)  {
+            const newUser = new this.userModel({
+                email: 'email@email.com',
+                password: 'password',
+                username: 'username',
+                avatar: Buffer.from(file.buffer)
+            })
+            await newUser.save()
+        }
+
+        return {
+            success: true,
+        }
+    }
 }

@@ -1,16 +1,20 @@
-import { Body, Controller, Get, Post, Render } from '@nestjs/common';
+import {Body, Controller, Get, Post, Query, Render } from '@nestjs/common';
 import { AppService } from './app.service';
 import { BodyDto } from './dtos/bodyDto';
 
+
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+      private readonly appService: AppService,
+  ) {}
 
   @Get()
   @Render('index')
   getHello() {
     return this.appService.getHello();
   }
+
 
   @Get('get-value')
   @Render('getValue')

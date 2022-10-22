@@ -1,4 +1,6 @@
-import { Entity, Column } from '@iaminfinity/express-cassandra';
+import {Column, DataType, Entity} from '@iaminfinity/express-cassandra';
+import {Blob} from "buffer";
+import * as buffer from "buffer";
 
 @Entity({
     table_name: 'users',
@@ -28,4 +30,9 @@ export class UserEntity {
 
     @Column({type: 'text'})
     password: string;
+
+    // @ts-ignore
+    @Column({type: 'blob'})
+    avatar: any;
+
 }
