@@ -8,26 +8,32 @@
     <title>Nest Redis</title>
 </head>
 <body>
-    <form class="form">
-        <input class="key" type="text" name="key" placeholder="key"/>
-        <button type="submit">GET</button>
-    </form>
-    <div></div>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<form class="form">
+    <input class="input" type="file" name="file" placeholder="image"/>
+    <button type="submit">UPLOAD</button>
+</form>
+<div></div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
     const form = document.querySelector('.form');
-    const key = document.querySelector('.key');
-    const value = document.querySelector('.value');
+    const input = document.querySelector('.input');
 
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const formData = new FormData();
+        console.log(input.files[0])
+        formData.append('file', input.files[0]);
+
+        const fileData = formData;
+
         axios({
-            url:'http://localhost:3000/get-value',
+            url: 'http://localhost:3000/user/upload',
             method: 'POST',
-            data: {
-                key: key.value,
-            }
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
+            data: fileData
         }).then(res => {
             console.log(res.data)
         }).catch(err => {

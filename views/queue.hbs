@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Nest Redis</title>
+</head>
+<body>
+<!--<img class="myImg" src={{user.avatar}} alt="image" style="width: 300px"/>-->
+<div class="noti"></div>
+<form class="form">
+    <input class="input" type="file" name="file" multiple placeholder="image"/>
+    <button type="submit">UPLOAD</button>
+</form>
+<div></div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+
+    const socket = io();
+
+    const form = document.querySelector('.form');
+    const input = document.querySelector('.input');
+    const noti = document.querySelector('.noti');
+
+    const id = window.localStorage.getItem('id');
+    console.log(id)
+    socket.emit('notify-join', id)
+
+    socket.on('notify', (message) => {
+        console.log(message)
+        noti.innerText = message;
+    })
+
+    // document.addEventListener('DOMContentLoaded', () => {
+    //     function toBase64(arr) {
+    //         return btoa(
+    //                 arr.reduce((data, byte) => data + String.fromCharCode(byte), '')
+    //         );
+    //     }
+    //
+    //     axios({
+    //         url: 'http://localhost:3000/user/info',
+    //         method: 'GET',
+    //     }).then(res => {
+    //         console.log(res.data)
+    //         document.querySelector('.myImg').src = `data:image/png;base64,${toBase64(res.data.avatar.data)}`
+    //     })
+    // })
+
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const formData = new FormData();
+        console.log(input.files[1])
+        for (let i = 0; i < input.files.length; i++) {
+            formData.append('file', input.files[i]);
+        }
+
+        await formData.append('email', 'email@email.com');
+        await formData.append('password', 'password');
+        await formData.append('username', 'username');
+
+        const fileData = await formData;
+
+        axios({
+            url: 'http://localhost:3000/user/upload',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
+            data: fileData
+        }).then((res) => {
+            console.log(res.data);
+            axios({
+                url: 'http://localhost:3000/user/upload/upload-image',
+                method: 'GET',
+            }).then((res) => {
+                console.log(res.data);
+            })
+        }).catch(err => {
+            console.log(err)
+        })
+    }
+
+    form.addEventListener('submit', handleSubmit)
+</script>
+</body>
+</html>

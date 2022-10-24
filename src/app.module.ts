@@ -1,11 +1,13 @@
-import { CacheModule, Module} from '@nestjs/common';
+import { Module, CacheModule} from '@nestjs/common';
 import {AppController} from './app.controller';
 import {AppService} from './app.service';
 import {ConfigModule} from '@nestjs/config';
 import {redisStore} from 'cache-manager-redis-store'
 import {UserModule} from "./user/user.module";
 import {auth, ExpressCassandraModule, ExpressCassandraModuleOptions} from "@iaminfinity/express-cassandra";
-import {UserEntity} from "./user/entities/user.entity";
+import {BullModule} from "@nestjs/bull";
+import {ImageService} from "./user/upload.producer.service";
+import {ImageConsumer} from "./user/upload.consumer";
 
 const cassandraOptions: ExpressCassandraModuleOptions = {
     clientOptions: {
@@ -33,7 +35,15 @@ const cassandraOptions: ExpressCassandraModuleOptions = {
         ExpressCassandraModule.forRoot(cassandraOptions),
         // ExpressCassandraModule.forFeature([UserEntity]),
         UserModule,
+        ExpressCassandraModule.forRoot(cassandraOptions),
+
         ConfigModule.forRoot(),
+        BullModule.forRoot({
+            redis: {
+                host: 'localhost',
+                port: 6379,
+            },
+        }),
         CacheModule.registerAsync({
             // @ts-ignore
             useFactory: async () => {
