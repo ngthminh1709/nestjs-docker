@@ -5,60 +5,83 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Nest Redis</title>
+
+    <title>Nest Socket</title>
 </head>
 <body>
-<img class="myImg" src={{user.avatar}} alt="image" style="width: 300px"/>
-<!--<div>{{message}}</div>-->
-<form class="form">
-    <input class="input" type="file" name="file" multiple placeholder="image"/>
-    <button type="submit">UPLOAD</button>
-</form>
-<div></div>
-<script src="https://cdn.socket.io/4.5.3/socket.io.min.js" integrity="sha384-WPFUvHkB1aHA5TDSZi6xtDgkF0wXJcIIxXhC6h8OT8EH3fC5PWro5pWJ1THjcfEi" crossorigin="anonymous"></script>
+<!--<img class="myImg" src={{user.avatar}} alt="image" style="width: 300px"/>-->
+<div>Socket</div>
+<div class="form">
+    <input class="input" type="text" name="file" placeholder="chat"/>
+    <button onclick="handleSubmit()" type="submit">Send</button>
+</div>
+<ul class="chat-box"></ul>
 <script src="/socket.io/socket.io.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
-    const form = document.querySelector('.form');
-    const input = document.querySelector('.input');
-
     const socket = io();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const formData = new FormData();
-        console.log(input.files[1])
-        for (let i = 0; i < input.files.length; i++) {
-            formData.append('file', input.files[i]);
-        }
+    const form = document.querySelector('.form');
+    const input = document.querySelector('.input');
+    const chatbox = document.querySelector('.chat-box');
 
-        await formData.append('email', 'email@email.com');
-        await formData.append('password', 'password');
-        await formData.append('username', 'username');
+    const id = window.localStorage.getItem('id');
+    const receiver = window.localStorage.getItem('receiver');
 
-        const fileData = await formData;
+    socket.emit('chat-message-join', id)
 
-        axios({
-            url: 'http://localhost:3000/user/upload',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            },
-            data: fileData
-        }).then((res) => {
-            console.log(res.data);
-            axios({
-                url: 'http://localhost:3000/user/upload/upload-image',
-                method: 'GET',
-            }).then((res) => {
-                console.log(res.data);
-            })
-        }).catch(err => {
-            console.log(err)
-        })
+    socket.on('chat-message', (message) => {
+        console.log(message);
+        handleNewMessage(message)
+    })
+
+    const handleNewMessage = (msg) => {
+        chatbox.appendChild(buildNewMessage(msg))
     }
 
-    form.addEventListener('submit', handleSubmit)
+    const buildNewMessage = (msg) => {
+        const li = document.createElement("li");
+        li.appendChild(document.createTextNode(msg))
+        return li;
+    }
+
+
+    const handleSubmit = (e) => {
+
+        // const formData = new FormData();
+        // console.log(input.files[1])
+        // for (let i = 0; i < input.files.length; i++) {
+        //     formData.append('file', input.files[i]);
+        // }
+        //
+        // await formData.append('email', 'email@email.com');
+        // await formData.append('password', 'password');
+        // await formData.append('username', 'username');
+        //
+        // const fileData = await formData;
+        //
+        // axios({
+        //     url: 'http://localhost:3000/user/upload',
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'multipart/form-data'
+        //     },
+        //     data: fileData
+        // }).catch(err => {
+        //     console.log(err)
+        // })
+
+        socket.emit('chat-message', {
+            id,
+            receiver,
+            message: input.value,
+        })
+
+        input.value = '';
+
+    }
+
+    // form.addEventListener('submit', handleSubmit)
 </script>
 </body>
 </html>
