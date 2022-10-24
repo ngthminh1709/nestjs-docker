@@ -3,7 +3,7 @@ import {
     Controller, Get,
     HttpCode,
     HttpStatus, Param,
-    Post, Render, Res,
+    Post, Put, Render, Res,
     UploadedFile, UploadedFiles,
     UseInterceptors
 } from '@nestjs/common';
@@ -29,6 +29,36 @@ export class UserController {
     @Render('queue')
     index() {
         return this.userService.index()
+    }
+
+    @Get('all')
+    async getAll() {
+        return this.userService.getAll()
+        // console.log(users)
+    }
+
+    @Get('/create')
+    @Render('create')
+    create() {
+        return this.userService.create()
+    }
+
+    @Post('/create-new')
+    @HttpCode(HttpStatus.CREATED)
+    createNew(@Body() registerUserDto: RegisterUserDto) {
+        return this.userService.createNew(registerUserDto);
+    }
+
+    @Post('/create-post')
+    @HttpCode(HttpStatus.CREATED)
+    createNewPost(@Body() body: any) {
+        return this.userService.createNew(body);
+    }
+
+    @Put('/update/:id')
+    @HttpCode(HttpStatus.CREATED)
+    update(@Body() body: any, @Param('id') id: any) {
+        return this.userService.update(id, body)
     }
 
     @Get('/info')

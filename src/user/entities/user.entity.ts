@@ -31,8 +31,7 @@ export class UserEntity {
     @Column({type: 'text'})
     password: string;
 
-    // @ts-ignore
-    @Column({type: 'blob'})
-    avatar: any;
+    // @Column({type: 'blob'})
+    // avatar: any;
 
 }

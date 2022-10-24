@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Nest Redis</title>
+</head>
+<body>
+<div>
+    <table class="table">
+        <tr>
+            <th>Id</th>
+            <th>Email</th>
+            <th>Password</th>
+            <th>Username</th>
+            <th></th>
+        </tr>
+    </table>
+</div>
+<div style="margin-top: 30vh">
+    <form class="form">
+        <input class="forWho" type="text" name="forWho" placeholder="id"/>
+        <input class="email" type="text" name="email" placeholder="email"/>
+        <input class="password" type="password" name="password" placeholder="password"/>
+        <input class="username" type="text" name="username" placeholder="username"/>
+        <button type="submit">UPLOAD</button>
+    </form>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    const form = document.querySelector('.form');
+    const email = document.querySelector('.email');
+    const password = document.querySelector('.password');
+    const username = document.querySelector('.username');
+    const forWho = document.querySelector('.forWho');
+    const table = document.querySelector('.table');
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const row = (user) => `
+          <tr>
+            <td>${user.id}</td>
+            <td>${user.email}</td>
+            <td>${user.password}</td>
+            <td>${user.username}</td>
+            <td><button onclick="handleDelete(${user.id})">X</button></td>
+        </tr>`
+
+        const handleDelete = (id) => {
+            console.log(id)
+        }
+
+        axios({
+            url: 'http://localhost:3000/user/all',
+            method: 'GET',
+        }).then(res => {
+            const users = res.data;
+            users.map(user => {
+                const html = row(user);
+                table.innerHTML += html;
+            })
+            console.log(res.data)
+        })
+    })
+
+
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const id = forWho.value;
+        let method = 'POST';
+        let url = 'http://localhost:3000/user/create-new';
+        if (id) {
+            url = `http://localhost:3000/user/update/${id}`;
+            method = 'PUT'
+        }
+
+        axios({
+            url,
+            method,
+            data: {
+                email: email.value,
+                password: password.value,
+                username: username.value
+            }
+        }).then((res) => {
+            console.log(res.data);
+        }).catch(err => {
+            console.log(err)
+        })
+    }
+
+    form.addEventListener('submit', handleSubmit)
+</script>
+</body>
+</html>
