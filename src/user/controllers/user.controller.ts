@@ -20,7 +20,7 @@ import {Queue} from "bull";
 export class UserController {
     constructor(
         private readonly userService: UserService,
-        private  readonly imageService: ImageService,
+        private readonly imageService: ImageService,
         @InjectQueue('image-queue') private imageQueue: Queue
     ) {
     }
@@ -29,6 +29,12 @@ export class UserController {
     @Render('queue')
     index() {
         return this.userService.index()
+    }
+
+    @Get('/chat')
+    @Render('socket-viewer')
+    chatPage() {
+        return this.userService.chatPage()
     }
 
     @Get('/info')

@@ -27,6 +27,10 @@ export class UserService {
         // }
     }
 
+    async chatPage() {
+        return { title: 'Chat Room' }
+    }
+
     async register(registerUserDto: RegisterUserDto) {
         const {email, username, password} = registerUserDto;
         const newUser = this.userRepository.create(registerUserDto)

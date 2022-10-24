@@ -3,13 +3,17 @@ import {Queue} from 'bull';
 import {InjectQueue} from '@nestjs/bull';
 import {BaseModel, InjectModel} from "@iaminfinity/express-cassandra";
 import {UserEntity} from "./entities/user.entity";
+import {WebSocketServer} from "@nestjs/websockets";
+import {Server} from "socket.io";
+import {UploadGateway} from "./upload.gateway";
 
 @Injectable()
 export class ImageService {
     constructor(
         @InjectModel(UserEntity)
         private readonly userModel: BaseModel<UserEntity>,
-        @InjectQueue('image-queue') private readonly imageQueue: Queue
+        @InjectQueue('image-queue') private readonly imageQueue: Queue,
+        private readonly uploadGateway: UploadGateway,
     ) {
     }
 
@@ -38,12 +42,17 @@ export class ImageService {
                 })
                 await newUser.save()
             }
+
+
             await this.imageQueue.add('upload-image-job', {
                 files: files
             }, {
                 // delay: 10000
                 jobId: 'upload-image'
             })
+
+            this.uploadGateway.server.to('f6a0dcf9-352f-4ca1-936d-c232acac0f76').emit('notify', 'Uploaded')
+
         } catch (e) {
             console.log(e);
         }

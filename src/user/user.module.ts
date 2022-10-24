@@ -6,10 +6,13 @@ import {UserEntity} from "./entities/user.entity";
 import {ImageService} from "./upload.producer.service";
 import {ImageConsumer} from "./upload.consumer";
 import {BullModule} from "@nestjs/bull";
+import {ChatGateway} from "./chat.gateway";
+import {RoomEntity} from "./entities/room.entity";
+import {UploadGateway} from "./upload.gateway";
 
 @Module({
     imports: [
-        ExpressCassandraModule.forFeature([UserEntity]),
+        ExpressCassandraModule.forFeature([UserEntity, RoomEntity]),
         // BullModule.forRoot(({
         //     redis:{
         //         host: 'localhost',
@@ -21,7 +24,7 @@ import {BullModule} from "@nestjs/bull";
         }),
     ],
     controllers: [UserController],
-    providers: [UserService, ImageService, ImageConsumer],
+    providers: [UserService, ImageService, ImageConsumer, ChatGateway, UploadGateway],
 })
 export class UserModule {
 }

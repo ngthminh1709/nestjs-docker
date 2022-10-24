@@ -26,7 +26,6 @@ export class ImageConsumer {
 
     @Process('upload-image-job')
     async uploadImageJob(job: Job) {
-        const files = await job.data.files;
 
         await console.log('Uploaded')
         return {
