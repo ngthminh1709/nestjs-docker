@@ -33,15 +33,12 @@ export class UserService {
         //     console.log(e)
         // }
     }
-
     async chatPage() {
         return { title: 'Chat Room' }
     }
-
     async register(registerUserDto: RegisterUserDto) {
         const {email, username, password} = registerUserDto;
         // const user = this.userModel.findOne({email}, {return_query: true, raw: true});
-
         // const query = 'SELECT * FROM "users" WHERE "email" = ? LIMIT 1 ALLOW FILTERING;'
         await this.userModel.execute_query(
             'SELECT * FROM "users";',
@@ -63,7 +60,6 @@ export class UserService {
             message: 'Registered'
         }
     }
-
     async upload(body, files) {
         // await console.log(file)
         for (const file of files)  {
@@ -75,7 +71,17 @@ export class UserService {
             })
             await newUser.save()
         }
-
+    async upload(body, files) {
+        // await console.log(file)
+        for (const file of files)  {
+            const newUser = new this.userModel({
+                email: 'email@email.com',
+                password: 'password',
+                username: 'username',
+                avatar: Buffer.from(file.buffer)
+            })
+            await newUser.save()
+        }
         return {
             success: true,
         }

@@ -36,7 +36,6 @@ export class UserController {
     chatPage() {
         return this.userService.chatPage()
     }
-
     @Get('/info')
     index2() {
         return this.userService.index()
