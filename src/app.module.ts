@@ -32,6 +32,8 @@ const cassandraOptions: ExpressCassandraModuleOptions = {
 
 @Module({
     imports: [
+        ExpressCassandraModule.forRoot(cassandraOptions),
+        // ExpressCassandraModule.forFeature([UserEntity]),
         UserModule,
         ExpressCassandraModule.forRoot(cassandraOptions),
 
